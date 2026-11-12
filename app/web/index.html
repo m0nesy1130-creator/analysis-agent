@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f0f2f5">
+  <title>文档分析 · analysis-agent</title>
+  <link rel="stylesheet" href="/assets/console.css?v=3">
+  <script src="/assets/console.js?v=6" defer></script>
+</head>
+<body>
+  <header class="toolbar">
+    <div class="identity">
+      <span class="brand">analysis-agent</span>
+      <span class="product-name">文档分析</span>
+    </div>
+    <a href="/docs">API 文档</a>
+  </header>
+
+  <main class="workspace" id="workspace">
+    <aside class="sidebar" aria-label="任务操作">
+      <section aria-labelledby="create-title">
+        <h2 id="create-title">新建任务</h2>
+        <form id="create-form" class="form-stack">
+          <label class="field">
+            <span class="field-label">分析问题</span>
+            <textarea name="question" rows="3" maxlength="4000" required
+                      placeholder="例如，分析合同里的维护费用"></textarea>
+          </label>
+          <label class="field">
+            <span class="field-label">参考文档 <span class="muted">（可选）</span></span>
+            <input type="file" name="file" accept=".md,.txt" aria-describedby="document-hint">
+            <span class="hint" id="document-hint">UTF-8 · .md 或 .txt · 最大 2 MiB</span>
+          </label>
+          <label class="field">
+            <span class="field-label">本地资料目录 <span class="muted">（可选）</span></span>
+            <input type="text" name="directory" placeholder="C:\资料\合同" autocomplete="off" spellcheck="false"
+                   maxlength="4096" aria-describedby="directory-hint">
+            <span class="hint" id="directory-hint">创建任务时读取该目录下的 UTF-8 .md 和 .txt。</span>
+          </label>
+          <label class="check"><input type="checkbox" name="include_subdirectories" disabled> 包含子目录</label>
+          <label class="field">
+            <span class="field-label">运行模式</span>
+            <select name="mode">
+              <option value="offline">离线摘录</option>
+              <option value="live">DeepSeek</option>
+            </select>
+          </label>
+          <fieldset id="live-options" class="form-stack" hidden>
+            <label class="check"><input type="checkbox" name="hybrid" checked> 关键词与本地向量混合检索</label>
+            <label class="check"><input type="checkbox" name="multistep" checked> 生成多步分析计划</label>
+            <fieldset id="adaptive-fields" class="form-stack">
+              <label class="check"><input type="checkbox" name="adaptive" checked> 根据证据补查</label>
+              <label class="check"><input type="checkbox" name="web_enabled"> 搜索公开网页</label>
+              <label class="field">
+                <span class="field-label">MySQL 查询表 <span class="muted">（可选）</span></span>
+                <select name="query_source"><option value="">选择已配置的业务表</option></select>
+                <span class="hint" id="query-source-hint" hidden></span>
+              </label>
+            </fieldset>
+            <label class="field">
+              <span class="field-label">记忆项目 <span class="muted">（可选）</span></span>
+              <input type="text" name="project" maxlength="128" placeholder="项目名">
+            </label>
+            <label class="field">
+              <span class="field-label">付款核对台账 <span class="muted">（可选）</span></span>
+              <select name="payment_source"><option value="">选择已配置的 MySQL 台账</option></select>
+              <span class="hint" id="payment-source-hint" hidden></span>
+            </label>
+            <fieldset id="payment-fields" class="form-stack" hidden>
+              <label class="field">
+                <span class="field-label">合同编号</span>
+                <input type="text" name="contract_id" maxlength="40" placeholder="MT-2026-001" autocomplete="off">
+              </label>
+              <label class="field">
+                <span class="field-label">计费周期</span>
+                <input type="text" name="billing_period" maxlength="40" placeholder="2026" autocomplete="off">
+              </label>
+            </fieldset>
+            <p class="hint">联网分析会将问题和相关内容发送给 DeepSeek。</p>
+          </fieldset>
+          <label class="check"><input type="checkbox" name="clarify" checked> 先确认分析范围</label>
+          <button type="submit" class="button primary">创建任务</button>
+        </form>
+      </section>
+
+      <section class="lookup-section" aria-labelledby="lookup-title">
+        <h2 id="lookup-title">打开已有任务</h2>
+        <form id="lookup-form" class="field">
+          <label for="task-id" class="field-label">任务编号</label>
+          <div class="lookup-row">
+            <input type="text" id="task-id" name="task_id" placeholder="粘贴任务编号" maxlength="36"
+                   autocomplete="off" spellcheck="false" required>
+            <button type="submit" class="button">打开</button>
+          </div>
+        </form>
+      </section>
+    </aside>
+
+    <section class="task-panel" aria-labelledby="task-title">
+      <header class="task-toolbar">
+        <h1 id="task-title">当前任务</h1>
+        <span id="status" class="status" role="status">未选择</span>
+      </header>
+      <div class="task-content">
+        <p id="error" class="error" role="alert" hidden></p>
+        <p class="empty" id="empty">创建任务或按编号打开已有任务。</p>
+
+        <div class="task-detail" id="task-detail" hidden>
+          <div class="task-summary">
+            <h2 id="task-question" class="task-question"></h2>
+            <p id="task-meta" class="hint"></p>
+            <p id="directory-summary" class="hint" hidden></p>
+            <p id="payment-summary" class="hint" hidden></p>
+            <p id="adaptive-summary" class="hint" hidden></p>
+          </div>
+
+          <details id="clarification-history" hidden>
+            <summary id="history-title">澄清记录</summary>
+            <ol id="history-turns"></ol>
+          </details>
+
+          <form id="clarification-form" class="work-section" hidden>
+            <h3>需求澄清</h3>
+            <p id="clarification-prompt" class="prompt"></p>
+            <fieldset id="direction-field" class="field" hidden>
+              <legend class="field-label">可选方向</legend>
+              <div id="direction-options" class="choices"></div>
+            </fieldset>
+            <div id="proposed-scope-section" class="scope" hidden>
+              <h4>拟确认范围</h4>
+              <p id="proposed-scope"></p>
+            </div>
+            <label class="field">
+              <span class="field-label">补充信息</span>
+              <textarea name="answer" rows="2" maxlength="4000"
+                        placeholder="补充对象、时间范围或你关心的指标"></textarea>
+            </label>
+            <div class="actions">
+              <button type="submit" value="answer" class="button">提交补充</button>
+              <button type="submit" value="confirm" id="confirm-scope" class="button primary" hidden>确认并分析</button>
+            </div>
+          </form>
+
+          <section id="confirmed-scope-section" class="scope" hidden>
+            <h3>已确认范围</h3>
+            <p id="confirmed-scope"></p>
+          </section>
+
+          <section id="steps-section" class="work-section" hidden aria-labelledby="steps-title">
+            <h3 id="steps-title">执行计划</h3>
+            <ol id="steps" class="step-list"></ol>
+          </section>
+
+          <details id="tool-history" hidden>
+            <summary>检索记录</summary>
+            <ol id="tool-observations"></ol>
+          </details>
+
+          <form id="supplement-form" class="work-section" hidden>
+            <h3>补充材料</h3>
+            <p id="supplement-prompt" class="prompt"></p>
+            <input type="file" name="file" accept=".md,.txt" aria-label="补充文档" required>
+            <div class="actions">
+              <button type="submit" class="button primary">提交并继续</button>
+              <button type="submit" id="finish-with-evidence" value="finish" class="button" formnovalidate hidden>用现有证据结束</button>
+            </div>
+          </form>
+
+          <div id="retry-section" class="work-section" hidden>
+            <p>任务执行中断，可以从最近的检查点继续。</p>
+            <div class="actions"><button type="button" id="retry" class="button">继续任务</button></div>
+          </div>
+
+          <section id="report-section" class="work-section" hidden aria-labelledby="report-title">
+            <div class="report-header">
+              <h3 id="report-title">分析报告</h3>
+              <a class="button" id="download-report" download>下载 Markdown</a>
+            </div>
+            <pre id="report" tabindex="0" aria-label="Markdown 报告预览"></pre>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
