@@ -9,7 +9,7 @@ from langgraph.types import Command, interrupt
 
 from .adaptive import ToolObservation, choose_action, execute_action, unique_evidence
 from .clarification import Clarification, ClarificationTurn, assess_request
-from .contracts import Claim, Evidence, Plan, RejectedDirection, Review, TaskRequest
+from .contracts import Claim, Evidence, Plan, PlanStep, RejectedDirection, Review, TaskRequest
 from .database_query import QuerySource
 from .deepseek_client import DeepSeekClient
 from .directories import DirectorySource
@@ -50,7 +50,9 @@ class AnalysisState(PlanExecutionState, TypedDict, total=False):
 
 
 def build_graph(
-    client: DeepSeekClient | None = None, *, checkpointer: BaseCheckpointSaver | None = None
+    client: DeepSeekClient | None = None, *,
+    checkpointer: BaseCheckpointSaver | None = None,
+    preset_plan: tuple[PlanStep, ...] = (),
 ):
     """提供检查点时，可暂停等待范围确认或接收补充文档。"""
     def first_planning_node(state: AnalysisState) -> Literal["plan_probe", "plan"]:
@@ -132,6 +134,8 @@ def build_graph(
 
     def plan(state: AnalysisState) -> dict:
         question = state["request"].question
+        if preset_plan:
+            return {"plan_steps": preset_plan}
         if payment := state.get("payment"):
             return {"plan_steps": payment_plan(payment)}
         if state.get("adaptive"):

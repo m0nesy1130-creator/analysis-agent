@@ -1,0 +1,62 @@
+:root {
+  color-scheme: light;
+  font: 15px/1.6 "Segoe UI", "Microsoft YaHei UI", sans-serif;
+  color: #202a36;
+  background: #f0f2f5;
+  --border: #d4dae2;
+  --muted: #586473;
+  --accent: #315a84;
+}
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body, h1, h2, h3, p { margin: 0; }
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px max(20px, calc((100vw - 1040px) / 2));
+  color: #fff;
+  background: #283543;
+}
+.toolbar a { color: #e5edf6; }
+main { width: min(1040px, calc(100% - 40px)); margin: 34px auto; }
+h1 { font-size: clamp(24px, 4vw, 32px); }
+h2 { font-size: 17px; }
+h3 { font-size: 14px; margin: 18px 0 4px; }
+.intro { margin: 6px 0 22px; color: var(--muted); }
+.workspace { display: grid; grid-template-columns: minmax(230px, 1fr) minmax(0, 2.2fr); gap: 16px; align-items: start; }
+.panel { min-width: 0; padding: 18px; background: #fff; border: 1px solid var(--border); border-radius: 5px; }
+.panel-header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.hint { margin-top: 18px; color: var(--muted); font-size: 13px; }
+.status { color: var(--muted); font-size: 13px; }
+.steps { margin: 14px 0; padding-left: 22px; }
+.steps li { padding: 8px 0; }
+.steps li + li { border-top: 1px solid var(--border); }
+.step-status { color: var(--muted); font-size: 13px; margin-left: 8px; }
+.step-status[data-state="supported"] { color: #315a45; }
+.step-status[data-state="insufficient"] { color: #8a4b20; }
+.step-detail { margin-top: 3px; font-size: 14px; }
+.prompt, .error { margin-top: 12px; padding: 8px 10px; background: #f6f1e9; border-left: 3px solid #92724b; }
+.error { color: #8b312e; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+button, .button {
+  padding: 6px 11px;
+  border: 1px solid #bcc6d1;
+  border-radius: 4px;
+  color: inherit;
+  background: #fff;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+button:hover, .button:hover { text-decoration: underline; }
+button:disabled { opacity: .6; cursor: wait; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+details { margin-top: 16px; }
+summary { cursor: pointer; }
+pre { padding: 12px; background: #f8fafc; border: 1px solid var(--border); white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (max-width: 670px) {
+  main { margin-top: 22px; }
+  .workspace { grid-template-columns: minmax(0, 1fr); }
+}

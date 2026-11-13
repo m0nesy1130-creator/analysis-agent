@@ -1,0 +1,7 @@
+# 公开演示只使用内置资料和 LangGraph 内存检查点。
+langgraph==1.2.20
+langsmith==0.14.17
+langgraph-checkpoint-mysql[pymysql]==3.0.0
+PyMySQL==1.2.4
+fastapi==0.162.4
+uvicorn==0.54.0

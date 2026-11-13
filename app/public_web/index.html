@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="使用虚构维护合同体验 analysis-agent 的证据复核与补证流程。">
+  <title>analysis-agent · 合同分析演示</title>
+  <link rel="stylesheet" href="/assets/demo.css">
+  <script src="/assets/demo.js" defer></script>
+</head>
+<body>
+  <header class="toolbar">
+    <strong>analysis-agent</strong>
+    <a href="https://github.com/m0nesy1130-creator/analysis-agent">GitHub 源码</a>
+  </header>
+  <main>
+    <h1>维护合同分析</h1>
+    <p class="intro">使用虚构合同，核对维护年费、服务范围和巡检频率。体验证据不足时暂停，补交附件后继续分析。</p>
+    <div class="workspace">
+      <aside class="panel" aria-labelledby="materials-heading">
+        <h2 id="materials-heading">资料</h2>
+        <h3>维护合同.txt</h3>
+        <p>维护年费为 12,000 元。实际提供的服务项目以签署的附件为准。</p>
+        <div id="attachment" hidden>
+          <h3>服务清单.txt</h3>
+          <p>服务范围包括定期巡检和故障排查。巡检频率为每月一次。</p>
+        </div>
+        <p class="hint">本演示使用固定计划和离线原文摘录，所有材料均为虚构。</p>
+      </aside>
+      <section class="panel" aria-labelledby="analysis-heading">
+        <div class="panel-header">
+          <h2 id="analysis-heading">分析结果</h2>
+          <span id="status" class="status" role="status">待开始</span>
+        </div>
+        <p id="error" class="error" role="alert" hidden></p>
+        <ol id="steps" class="steps" hidden></ol>
+        <p id="prompt" class="prompt" hidden></p>
+        <div class="actions">
+          <button id="start" type="button" class="primary">开始分析</button>
+          <button id="supplement" type="button" class="primary" hidden>补交服务清单</button>
+          <button id="finish" type="button" hidden>用现有证据生成报告</button>
+          <a id="download" class="button" download="analysis-agent-demo.md" hidden>下载 Markdown</a>
+        </div>
+        <details id="report" hidden>
+          <summary>查看 Markdown 报告</summary>
+          <pre id="report-content"></pre>
+        </details>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
