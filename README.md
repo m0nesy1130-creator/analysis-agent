@@ -6,6 +6,8 @@
 
 ## 面试演示
 
+[在线体验（无需登录）](https://analysis-agent-demo-u3lh.onrender.com/)
+
 公开演示使用虚构维护合同。点击「开始分析」后，可以看到维护年费已核对、服务范围待补证、巡检频率因依赖未完成而暂停。补交示例服务清单后，Agent 继续核对剩余步骤，并提供可下载的 Markdown 报告。[部署和体验说明](docs/public-demo.md)
 
 ## 快速体验
