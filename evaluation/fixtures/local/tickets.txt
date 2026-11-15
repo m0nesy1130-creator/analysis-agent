@@ -1,0 +1,3 @@
+虚构运维工单约定
+项目运行环境为 Python 3.12。
+缺失路径工单使用 symptom=path_missing，尚未处理的工单使用 status=open。

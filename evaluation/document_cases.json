@@ -1,0 +1,144 @@
+[
+  {
+    "id": "D01",
+    "file": "pilot.txt",
+    "question": "试点工期是多少天？",
+    "status": "supported",
+    "patterns": [
+      "30\\s*天"
+    ],
+    "lines": [
+      2
+    ]
+  },
+  {
+    "id": "D02",
+    "file": "pilot.txt",
+    "question": "试运行要持续多长时间，从哪天算起？",
+    "status": "supported",
+    "patterns": [
+      "30\\s*天",
+      "立项.{0,5}(次日|第二天|次天)"
+    ],
+    "lines": [
+      2
+    ]
+  },
+  {
+    "id": "D03",
+    "file": "pilot.txt",
+    "question": "项目验收要交哪些材料？",
+    "status": "supported",
+    "patterns": [
+      "测试记录",
+      "部署说明"
+    ],
+    "lines": [
+      3
+    ]
+  },
+  {
+    "id": "D04",
+    "file": "service.txt",
+    "question": "维护年费是多少？",
+    "status": "supported",
+    "patterns": [
+      "(?<!\\d)12[,]?000(?!\\d)"
+    ],
+    "lines": [
+      2
+    ]
+  },
+  {
+    "id": "D05",
+    "file": "service.txt",
+    "question": "接到紧急故障报告后，最迟多久要响应？",
+    "status": "supported",
+    "patterns": [
+      "(2|两|二)\\s*(个)?小时"
+    ],
+    "lines": [
+      4
+    ]
+  },
+  {
+    "id": "D06",
+    "file": "service.txt",
+    "question": "服务结束后，什么时候最迟要交年度报告？",
+    "status": "supported",
+    "patterns": [
+      "(5|五)\\s*(个)?工作日"
+    ],
+    "lines": [
+      5
+    ]
+  },
+  {
+    "id": "D07",
+    "file": "service.txt",
+    "question": "合同对换硬件是怎么报价的？",
+    "status": "supported",
+    "patterns": [
+      "另行报价|单独报价|另外报价"
+    ],
+    "lines": [
+      6
+    ]
+  },
+  {
+    "id": "D08",
+    "file": "pilot.txt",
+    "question": "生产系统的具体上线日期是哪天？",
+    "status": "insufficient",
+    "patterns": [],
+    "lines": []
+  },
+  {
+    "id": "D09",
+    "file": "service.txt",
+    "question": "合同约定延迟付款的违约金是多少？",
+    "status": "insufficient",
+    "patterns": [],
+    "lines": []
+  },
+  {
+    "id": "D10",
+    "file": "conflict.txt",
+    "question": "同一份 CF-2026-001 V1.0 合同在 2026 年的维护年费究竟是多少？请核对甲乙双方副本。",
+    "status": "conflicting",
+    "patterns": [
+      "12[,]?000",
+      "15[,]?000"
+    ],
+    "lines": [
+      2,
+      4
+    ]
+  },
+  {
+    "id": "D11",
+    "file": "scope.txt",
+    "question": "仅核对 2026 年维护年费是多少。",
+    "status": "supported",
+    "patterns": [
+      "(?<!\\d)12[,]?000(?!\\d)"
+    ],
+    "lines": [
+      3
+    ]
+  },
+  {
+    "id": "D12",
+    "file": "split.txt",
+    "question": "什么情况属于紧急故障，遇到这种情况须在多久内响应？",
+    "status": "supported",
+    "patterns": [
+      "工单系统.{0,8}(完全|全部).{0,4}(不可用|无法使用)",
+      "(2|两|二)\\s*(个)?小时"
+    ],
+    "lines": [
+      2,
+      3
+    ]
+  }
+]
